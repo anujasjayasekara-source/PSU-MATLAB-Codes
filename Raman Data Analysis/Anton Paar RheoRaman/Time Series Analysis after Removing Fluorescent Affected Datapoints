@@ -1,0 +1,160 @@
+Raman_Timeseries = Import_Raman_TimeSeries(); % Change the "Raman_Timeseries" to any preferred "NAME" and press SHIFT + ENTER (windows PC) to change all instances. This will be your main struct label.
+
+
+%% Normalizing spectra using Standard Normal Variate Method
+
+% SNV Normalization & Non-negativity satisfaction
+% SNV (Standard Normal Variate) is a normalization technique for
+% vibrational spectra. The SNV transformation was introduced by Barnes et al.
+% to reduce multiplicative effects of scattering and particle size, and also to reduce
+% differences in the global intensities of the signals. Each spectrum is centered
+% and then scaled by dividing by its standard deviation.
+
+% X(snv) = (X(i) - X(ave))/ SD(X(i))
+
+% X(snv) - SNV normalized absorbance
+% X(i) - Experimental absorbance
+% X(ave) - Mean absorbance
+% SD(X(i)) - Standard deviation of absorbance
+
+% For the MCR-ALS analysis, the spectra need to have non-negative
+% absorbance. There is a step to fulfill this requirement in the code
+% below.
+
+
+for i = 1:length(Raman_Timeseries)
+    for j = 1:length(Raman_Timeseries(i).Data)
+        for k = 2:width(Raman_Timeseries(i).Data)
+
+
+        Raman_Timeseries(i).Normalized_Data(j,k) = (Raman_Timeseries(i).Data(j,k) - mean(Raman_Timeseries(i).Data(:,k))) / std(Raman_Timeseries(i).Data(:,k)); % SNV normalization for all spectra
+        Raman_Timeseries(i).Normalized_Data(j,1) = Raman_Timeseries(i).Data(j,1); % Storing Raman shifts
+        % Normalized values are stored in Normalized_Data
+
+
+        Raman_Timeseries(i).Normalized_NonZero_Data(j,k) = Raman_Timeseries(i).Normalized_Data(j,k) - min(Raman_Timeseries(i).Normalized_Data(:,k)); % non-negativity satisfaction
+        Raman_Timeseries(i).Normalized_NonZero_Data(j,1) = Raman_Timeseries(i).Normalized_Data(j,1); % Storing Raman shifts        
+        % Non-negative values are stored in Normalized_NonZero_Data
+
+        end
+    end
+
+end
+
+%% Removing first 500 data points to exclude fluorescent affected data from normalization
+
+% Run the following section to remove the Raman shift range that contain fluorescent intensity
+numSamples = numel(Raman_Timeseries);
+
+for i = 1:numSamples
+    Idx500 = find(Raman_Timeseries(i).Data(:,1) == 500);
+    if ~isempty(Idx500)
+        Raman_Timeseries(i).Fscent_Removed = Raman_Timeseries(i).Data(Idx500:end, :); % Remove data from 500 cm^-1 onwards
+    end
+end
+
+% SNV normalization
+for i = 1:length(Raman_Timeseries)
+    for j = 1:length(Raman_Timeseries(i).Fscent_Removed)
+        for k = 2:width(Raman_Timeseries(i).Fscent_Removed)
+
+            Raman_Timeseries(i).Normalized_Fscent_Removed(j,k) = (Raman_Timeseries(i).Fscent_Removed(j,k) - mean(Raman_Timeseries(i).Fscent_Removed(:,k))) / std(Raman_Timeseries(i).Fscent_Removed(:,k)); % SNV normalization for all spectra
+            Raman_Timeseries(i).Normalized_Fscent_Removed(j,1) = Raman_Timeseries(i).Fscent_Removed(j,1); % Storing Raman shifts
+            % Normalized values are stored in Normalized_Data
+
+            Raman_Timeseries(i).Normalized_NonZero_Fscent_Removed_Data(j,k) = Raman_Timeseries(i).Normalized_Fscent_Removed(j,k) - min(Raman_Timeseries(i).Normalized_Fscent_Removed(:,k)); % non-negativity satisfaction
+            Raman_Timeseries(i).Normalized_NonZero_Fscent_Removed_Data(j,1) = Raman_Timeseries(i).Normalized_Fscent_Removed(j,1); % Storing Raman shifts
+            % Non-negative values are stored in Normalized_NonZero_Data
+
+        end
+    end
+
+end
+
+%% Plotting Data - 2D
+
+numSamples = numel(Raman_Timeseries); % Calculating number of samples (data files)
+
+for i = 1:numSamples
+
+    Figure_2D = figure('Units','inches', ...          % figure dimension units
+        'Position',[1 1 8 6], ...      % figure position on the screen
+        'PaperUnits','inches', ...     % figure template dimension units
+        'PaperPosition',[0 0 8 6], ... % figure position on the template
+        'PaperSize',[8 6]);            % template aspect ratio
+
+    hold on; box on;
+
+    % Replace 4 and 3 in all to change the aspect ratio
+
+    h = gobjects(numSamples,1); % Preloading plots to assign legends later
+
+    numTimeSeries = size(Raman_Timeseries(i).Data, 2); % Finding the number of time series spectra
+    cm = turbo(numTimeSeries); % color palette for each spectra
+
+    yShift = 2;
+
+    for j = 2:numTimeSeries % j = 1 is Raman shifts. So j starting with 2 for intensities
+
+        x = Raman_Timeseries(i).Normalized_NonZero_Fscent_Removed_Data(:,1);      % Raman shift
+        y = Raman_Timeseries(i).Normalized_NonZero_Fscent_Removed_Data(:,j);      % Intensity
+
+        h(i) = plot(x, y + (j-1)*yShift, '-', 'Color', cm(j,:), 'LineWidth', 2);        
+
+    end
+
+    xlabel('Raman Shift (cm^{-1})'); xlim([100 2300]);
+    ylabel('Normalized Intensity (a.u.)'); yticks('auto'); yticklabels([]);
+    set(gca, 'FontSize', 15, 'Linewidth', 2)
+
+    % FigName = Raman_Timeseries(i).FileName;
+    % savefig(Figure_2D, FigName + "_2D.fig");
+    % exportgraphics(Figure_2D, FigName + "_2D.tiff", 'Resolution', 600);
+
+end
+
+%% Surface 3D plot
+
+% Settng figure properties similar to the 2D figure
+
+for i = 1:numel(Raman_Timeseries)
+    Figure_3D = figure('Units','inches', ...
+        'Position',[1 1 8 6], ...
+        'Color','w');
+
+    ax = axes(Figure_3D);
+    hold(ax,'on');
+    view(ax,3); % 3D view
+
+    numTimeSeries = size(Raman_Timeseries(i).Data, 2); % Finding the number of time series spectra
+    cm = turbo(numTimeSeries); % color palette for each spectra
+
+    for j = 2:numTimeSeries % j = 1 is Raman shifts. So j starting with 2 for intensities
+
+        x = Raman_Timeseries(i).Normalized_NonZero_Fscent_Removed_Data(:,1);      % Raman shift
+        z = Raman_Timeseries(i).Normalized_NonZero_Fscent_Removed_Data(:,j);      % Intensity
+        y = Raman_Timeseries(i).TimeOffset(j-1);    % Time in seconds
+    
+    % Creating the surface plot
+    surface([x x], ...
+            [y*ones(size(x)) y*ones(size(x))], ...
+            [z z], ...
+            [z z], ...
+            'FaceColor','none', ...
+            'EdgeColor','flat', ...
+            'LineWidth',1);
+    end
+
+    yStart = Raman_Timeseries(i).TimeOffset(1); yEnd = Raman_Timeseries(i).TimeOffset(end);
+
+    xlabel('Raman Shift (cm^{-1})'); xlim([500 2000]); %set(gca, 'xdir', 'Reverse');
+    ylabel('Time (s)'); ylim([yStart yEnd]); yticks(yStart:400:yEnd);
+    zlabel('Intensity (a.u.)'); zticks([]);
+    view(gca,-20,50); grid('off'); set(gca, 'fontsize', 15);
+    clim(ax,[-0.7 5])
+    colormap(turbo)
+
+    % savefig(Figure_3D, FigName + "_3D.fig");
+    % exportgraphics(Figure_3D, FigName + "_3D.tiff", 'Resolution', 600);
+
+end
