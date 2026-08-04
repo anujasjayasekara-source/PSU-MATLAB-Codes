@@ -113,7 +113,7 @@ for i = 1:numel(Raman_SingleMeasurement)
 
 end
 
-xlabel('Raman Shift (cm^{-1})'); xlim([1390 1550]);
+xlabel('Raman Shift (cm^{-1})'); xlim([500 2300]);
 ylabel('Temperature (^{\circ}C)'); ylim([40 160]);
 zlabel('Intensity'); zticks([]);
 view(gca,20,50); grid('off'); set(gca, 'fontsize', 15)
