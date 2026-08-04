@@ -1,0 +1,4 @@
+======= Important ======== 
+COPY the respective Import Function to a MATLAB script and SAVE it in the same directory as your data.
+
+Then COPY the Analysis script to another MATLAB script and run the code
