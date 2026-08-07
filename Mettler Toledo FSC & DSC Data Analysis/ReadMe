@@ -41,16 +41,16 @@ Once imported, you will see the following,
           Dynamic.Col 2. Col 2 === Previous isothermal hold time before the heating segment
           Dynamic.Col 2. Col 3 === Heating rate in K/s
 
-        Dynamic.Col 2 (Cooling) === All cooling data
-          Dynamic.Col 2. Col 1 === Cooling data
-            Dynamic.Col 2. Col 1. Col 1 === Index
-            Dynamic.Col 2. Col 1. Col 2 === Time
-            Dynamic.Col 2. Col 1. Col 3 === Sample temperature
-            Dynamic.Col 2. Col 1. Col 4 === Reference temperature
-            Dynamic.Col 2. Col 1. Col 5 === Heat flow rate in mW
+        Dynamic.Col 3 (Cooling) === All cooling data
+          Dynamic.Col 3. Col 1 === Cooling data
+            Dynamic.Col 3. Col 1. Col 1 === Index
+            Dynamic.Col 3. Col 1. Col 2 === Time
+            Dynamic.Col 3. Col 1. Col 3 === Sample temperature
+            Dynamic.Col 3. Col 1. Col 4 === Reference temperature
+            Dynamic.Col 3. Col 1. Col 5 === Heat flow rate in mW
 
-          Dynamic.Col 2. Col 2 === Previous isothermal hold time before the cooling segment
-          Dynamic.Col 2. Col 3 === Cooling rate in K/s
+          Dynamic.Col 3. Col 2 === Previous isothermal hold time before the cooling segment
+          Dynamic.Col 3. Col 3 === Cooling rate in K/s
 
 
 Enjoy!
