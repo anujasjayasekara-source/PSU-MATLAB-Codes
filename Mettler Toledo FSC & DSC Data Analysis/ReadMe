@@ -1,0 +1,57 @@
+Hello,
+The MT_TA_ImportFunction.m file helps you to import FSC or DSC data collected by MT Flash DSC or MT DSC 3+ in a matter of seconds.
+
+This code imports all segments regardless of their nature, either as isothermal or dynamic heating/cooling, and stores them in separate bins in a MATLAB struct.
+
+Your data must be in .txt format and must be exported from starE with the exact name given by it. Because the code reads that specific name and identifies how many segments are there in your experiment.
+
+You can import as many data files as you want using this code. In other words, you can select multiple data files once prompted and all of them will be imported into the same struct.
+
+Once imported, you will see the following,
+
+    Col 1 (File)   === The filename of the datafile
+    Col 2 (Mass)   === The mass of the sample. A numeric value will be displayed for DSC data (this is the sample mass you enter when setting up the experiment) and it will show zero for FSC as there is no mass value entered for FSC experiments initially.
+    Col 3 (Data)   === All raw data before binning into either isothermal or dynamic
+    Col 4 (Iso)    === All isothermal data
+        Iso.Col 1 === Struct containing all information about the isothermal hold
+          Iso.Col 1. Col 1 (Index)   === Segment Number
+          Iso.Col 1. Col 2 (Name)    === Segment Name
+          Iso.Col 1. Col 3 (Values)  === Data
+          Iso.Col 1. Col 4 (Type)    === Bin type (isothermal)
+          Iso.Col 1. Col 5 (IsoTemp) === Isothermal temperature
+          Iso.Col 1. Col 6 (IsoHold) === Isothermal hold time
+
+        Iso.Col 2 === Isothermal temperature
+        Iso.Col 3 === Isothermal hold time
+
+    Col 5 (Dynamic) === All dynamic data
+        Dynamic.Col 1 (All)     === All dynamic data before binning to heating or cooling
+        Dynamic.Col 2 (Heating) === All heating data
+          Dynamic.Col 2. Col 1 === Heating data
+            Dynamic.Col 2. Col 1. Col 1 === Index
+            Dynamic.Col 2. Col 1. Col 2 === Time
+            Dynamic.Col 2. Col 1. Col 3 === Sample temperature
+            Dynamic.Col 2. Col 1. Col 4 === Reference temperature
+            Dynamic.Col 2. Col 1. Col 5 === Heat flow rate in mW
+
+          Dynamic.Col 2. Col 2 === Previous isothermal hold time before the heating segment
+          Dynamic.Col 2. Col 3 === Heating rate in K/s
+
+        Dynamic.Col 2 (Cooling) === All cooling data
+          Dynamic.Col 2. Col 1 === Cooling data
+            Dynamic.Col 2. Col 1. Col 1 === Index
+            Dynamic.Col 2. Col 1. Col 2 === Time
+            Dynamic.Col 2. Col 1. Col 3 === Sample temperature
+            Dynamic.Col 2. Col 1. Col 4 === Reference temperature
+            Dynamic.Col 2. Col 1. Col 5 === Heat flow rate in mW
+
+          Dynamic.Col 2. Col 2 === Previous isothermal hold time before the cooling segment
+          Dynamic.Col 2. Col 3 === Cooling rate in K/s
+
+
+Enjoy!
+
+All feedback is welcome.
+akj5856@psu.edu
+
+        
