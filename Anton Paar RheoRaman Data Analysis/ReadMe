@@ -1,3 +1,51 @@
-Download the desired import function file and its analysis file to the directory. Make sure that your data is in .txt format
+Hello,
+Download the desired import function and the analysis function to the directory containing your data files
 
-Run the code section wise
+For single measurements (including temperature controlled Raman experiments)
+  Import_Raman_SingleMeasurement.m
+  Raman_SingleMeasurement_Analysis.m
+  Raman_SingleMeasurement_Analysis_FullSpectrum.m
+
+For time series data analysis
+  Import_Raman_TimeSeries.m
+  Raman_TimeSeries_Analysis.m
+  Raman_TimeSeries_Analysis_FullSpectrum.m
+
+You can select multiple files to import and the data will be stored in a MATLAB struct. You can import .txt files or .csv files
+
+=== Single measurement data ===
+Col 1 (FileName) === File name
+Col 2 (Data)     === Data
+  Col 2. Col 1 === Raman shifts
+  Col 2. Col 2 === Raw Raman Intensity
+
+Once the normalization is performed
+  Col 2. Col 3 === Normalized Raman intensity
+  Col 2. Col 4 === Normalized non-zero Raman intensity
+
+=== Time series data ===
+Col 1 (FileName)   === File name
+Col 2 (RamanShift) === Raman shifts (without any intensity). This is kept for sanity checks
+Col 3 (TimeOffset) === Time offset from the initial measurement at time t = 0
+Col 4 (TimeStamp)  === Time stamp of each collected spectrum
+Col 5 (Data)       === Data
+  Col 5. Col 1     === Raman shifts
+  Col 5. Col 2:end === Raw Raman Intensity
+
+Once the normalization is performed
+
+Col 6 (Normalized_Data) === Normalized data
+  Col 6. Col 1     === Raman shifts
+  Col 6. Col 2:end === Normalized Raman Intensity
+
+Col 7 (Normalized_NonZero_Data) === Normalized nonZero data
+  Col 7. Col 1     === Raman shifts
+  Col 7. Col 2:end === Normalized nonZero Raman Intensity
+
+=== Analysis files ===
+I have created the analysis files for basic data analysis like plotting. Further analysis could be performed as you like.
+
+Cheers!
+
+All feedback is welcome!
+akj5856@psu.edu
