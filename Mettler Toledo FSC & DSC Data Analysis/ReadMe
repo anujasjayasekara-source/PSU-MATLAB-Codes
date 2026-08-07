@@ -1,4 +1,8 @@
 Hello,
+
+Download the MT_TA_ImportFunction.m (must) and the TA_DataAnalysis.m (optional) file into the directory containing the data files. You can call the import funtion MT_TA_ImportFunction.m by the following syntax in any script or in the command window
+NameYouWant = MT_TA_ImportFunction();
+
 The MT_TA_ImportFunction.m file helps you to import FSC or DSC data collected by MT Flash DSC or MT DSC 3+ in a matter of seconds.
 
 This code imports all segments regardless of their nature, either as isothermal or dynamic heating/cooling, and stores them in separate bins in a MATLAB struct.
